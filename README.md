@@ -1,2 +1,13 @@
 # CTF
-A simple Next app designed as a CTF to encourage more secure development practices
+
+### Build and dev scripts
+
+- `dev` – start dev server
+- `build` – bundle application for production
+- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
+
+### Quality scripts
+
+- `typecheck` – checks TypeScript types
+- `lint` – runs ESLint
+- `prettier:check` – checks files with Prettier
