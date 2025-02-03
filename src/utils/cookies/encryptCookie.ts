@@ -1,18 +1,27 @@
-import crypto from 'crypto';
 import { RawUser } from '@/src/schema/user';
 import { algorithm, secretKey } from './shared';
 
-const iv = crypto.randomBytes(16);
-
-export const encryptCookie = (user: RawUser): string => {
+export const encryptCookie = async (user: RawUser): Promise<string> => {
   const userString = JSON.stringify(user);
+  const iv = crypto.getRandomValues(new Uint8Array(16)); // Generate a random IV
 
-  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-  let encrypted = cipher.update(userString, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
+  const key = await crypto.subtle.importKey('raw', secretKey, { name: algorithm }, false, [
+    'encrypt',
+  ]);
 
-  return JSON.stringify({
-    iv: iv.toString('hex'),
-    content: encrypted,
+  const encryptedContent = await crypto.subtle.encrypt(
+    { name: algorithm, iv },
+    key,
+    new TextEncoder().encode(userString)
+  );
+
+  const encryptedData = JSON.stringify({
+    iv: Array.from(iv),
+    content: Buffer.from(encryptedContent).toString('base64'),
   });
+
+  return encodeURIComponent(encryptedData);
 };
+
+// This file uses crypto which isn't available in the edge runtime
+// Either I can find another crypto package to use or create a middleware that I can invoke within handlers

@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server';
-import { RequestWithUser } from './src/types/RequestWithUser';
-import { decryptCookie } from './src/utils/cookies/decryptCookie';
-import { cookieKey } from './src/utils/cookies/shared';
+import { getUserFromRequest } from './src/utils/cookies/getUserFromRequest';
 
-const ignoredBasePaths = ['/api/auth'];
+const ignoredBasePaths = ['/api/auth', '/api/ctf'];
 const ignoredFullPaths = ['/api/users'];
 
-export const middleware = (req: NextRequest) => {
+export const middleware = async (req: NextRequest) => {
   const { pathname } = req.nextUrl;
 
   if (!pathname.startsWith('/api')) {
@@ -14,8 +12,6 @@ export const middleware = (req: NextRequest) => {
     console.debug('Ignoring non-api path...');
     return;
   }
-
-  console.log(pathname);
 
   if (
     ignoredBasePaths.some((path) => pathname.startsWith(path)) ||
@@ -27,16 +23,15 @@ export const middleware = (req: NextRequest) => {
   }
 
   try {
-    const cookieString = req.cookies.get(cookieKey)?.value;
-
-    if (!cookieString) {
+    try {
+      await getUserFromRequest(req);
+    } catch {
       return new Response(undefined, {
         status: 401,
       });
     }
 
-    const user = decryptCookie(cookieString);
-    (req as RequestWithUser).user = user;
+    // Continue; valid session
   } catch (error) {
     console.error(error);
     return new Response(undefined, {

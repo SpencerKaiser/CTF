@@ -1,7 +1,7 @@
 export const cookieKey = 'session';
 
-export const algorithm = 'aes-256-cbc';
+export const algorithm = 'AES-CBC';
 
-export const secretKey = Buffer.from(
-  (process.env.COOKIE_SECRET ?? 'potato').padEnd(32, '0')
-).subarray(0, 32);
+export const secretKey = new TextEncoder().encode(
+  (process.env.COOKIE_SECRET ?? 'potato').padEnd(32, '0').slice(0, 32)
+);

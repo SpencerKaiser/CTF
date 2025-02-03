@@ -1,40 +1,28 @@
-import crypto from 'crypto';
-import { authCookieSchema } from '@/src/schema/auth';
-import { RawUser, rawUserSchema } from '@/src/schema/user';
+import { RawUser } from '@/src/schema/user';
 import { algorithm, secretKey } from './shared';
 
-export const decryptCookie = (cookieString: string): RawUser => {
-  // Attempt to JSON parse the cookie string into an object that can be further parsed
-  let parsedHash = '';
+export const decryptCookie = async (cookieString: string): Promise<RawUser> => {
+  let parsedHash: any;
   try {
-    parsedHash = JSON.parse(cookieString);
+    parsedHash = JSON.parse(decodeURIComponent(cookieString));
   } catch {
-    // Ignore parsing error; let the schema validation handle it
+    throw new Error('Invalid cookie format');
   }
 
-  const { data, error } = authCookieSchema.safeParse(parsedHash);
+  const { iv, content } = parsedHash;
 
-  if (error) {
-    throw new Error('Invalid cookie');
-  }
+  const key = await crypto.subtle.importKey('raw', secretKey, { name: algorithm }, false, [
+    'decrypt',
+  ]);
 
-  const { iv, content } = data;
-  const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(iv, 'hex'));
-  let decryptedUserString = decipher.update(content, 'hex', 'utf8');
-  decryptedUserString += decipher.final('utf8');
+  const decryptedContent = await crypto.subtle.decrypt(
+    { name: algorithm, iv: new Uint8Array(iv) },
+    key,
+    Buffer.from(content, 'base64')
+  );
 
-  let parsedRawUser = '';
-  try {
-    parsedRawUser = JSON.parse(decryptedUserString);
-  } catch {
-    // Ignore parsing error; let the schema validation handle it
-  }
+  const userString = new TextDecoder().decode(decryptedContent);
+  const user = JSON.parse(userString); // You can validate this against your schema here
 
-  const { data: user, error: userParsingError } = rawUserSchema.safeParse(parsedRawUser);
-
-  if (userParsingError) {
-    throw new Error('Invalid user data');
-  }
-
-  return user;
+  return user as RawUser;
 };
