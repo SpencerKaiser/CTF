@@ -57,7 +57,6 @@ export const LoginForm: React.FC = () => {
       gap={20}
       onKeyUp={(e) => e.key === 'Enter' && submit()}
       w={{ base: '80%', sm: '60%', md: '400px' }}
-      bd={'1px solid red'}
     >
       <InputWrapper label="Username">
         <Input

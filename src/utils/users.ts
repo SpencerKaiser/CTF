@@ -49,7 +49,7 @@ const createUsers = (): Readonly<RawUser[]> => {
   const targetOfVulnerableAdmin = adminIndices[Math.floor(adminIndices.length / 2)];
 
   for (let i = 0; i < numUsers; i++) {
-    const lastName = faker.person.lastName();
+    const recoveryWord = faker.word.sample();
     const isAdmin = adminIndices.includes(i) || undefined; // Use undefined so it's not always visible in the API response
 
     // If index of the current user is the "vulnerable admin", make their password the temp password, else follow normal flow
@@ -57,13 +57,13 @@ const createUsers = (): Readonly<RawUser[]> => {
       i === targetOfVulnerableAdmin || resetPasswordIndices.includes(i) || undefined; // Use undefined so it's not always visible in the API response
 
     const password = hasTempPassword
-      ? `${lastName}${tempPasswordSuffix}`
+      ? `${recoveryWord}${tempPasswordSuffix}`
       : faker.internet.password();
 
     users.push({
       id: faker.string.uuid(),
       isAdmin,
-      lastName,
+      recoveryWord,
       hasTempPassword,
       username: faker.internet.username(),
       passwordHash: hashPassword(password),
