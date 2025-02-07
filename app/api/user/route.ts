@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import z from 'zod';
-import { USERS } from '@/src/utils';
+import { USERS, VULNERABLE_ADMIN_ID } from '@/src/utils';
 import { markTaskAsComplete } from '@/src/utils/challenges/markTaskAsComplete';
 import { rawUserToUser } from '@/src/utils/rawUserToUser';
 
@@ -27,7 +27,7 @@ export const GET = async (req: NextRequest) => {
 
   if ([rawLimit, rawCursor].some((val) => val !== undefined)) {
     await markTaskAsComplete({
-      challengeTitle: "We're in...",
+      challengeTitle: 'ACCESS GRANTED',
       challengeTask: 'findLimitOrPaginate',
     });
   }
@@ -58,6 +58,13 @@ export const GET = async (req: NextRequest) => {
   const users = USERS.slice(cursor, nonInclusiveEnd).map((user) =>
     expanded ? user : rawUserToUser(user)
   );
+
+  if (expanded && users.some(({ id }) => id === VULNERABLE_ADMIN_ID)) {
+    await markTaskAsComplete({
+      challengeTitle: 'ACCESS GRANTED',
+      challengeTask: 'retrieveExpandedVulnerableAdmin',
+    });
+  }
 
   const itemsRemain = nonInclusiveEnd < USERS.length;
   const nextCursor = itemsRemain ? nonInclusiveEnd : null; // Null cursor means no items remain

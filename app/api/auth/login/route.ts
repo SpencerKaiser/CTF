@@ -20,13 +20,14 @@ export const POST = async (req: NextRequest) => {
     const matchingUser = USERS.find((user) => user.username === username);
     const hashedPassword = hashPassword(password);
 
+    if (matchingUser?.isAdmin) {
+      await markTaskAsComplete({
+        challengeTitle: 'ACCESS GRANTED',
+        challengeTask: 'attemptLoginAsAdmin',
+      });
+    }
+
     if (!matchingUser || matchingUser.passwordHash !== hashedPassword) {
-      if (matchingUser?.isAdmin) {
-        await markTaskAsComplete({
-          challengeTitle: 'ACCESS GRANTED',
-          challengeTask: 'attemptLoginAsAdmin',
-        });
-      }
       const headers: Record<string, string> = matchingUser?.hasTempPassword
         ? { 'X-Temp-Password': 'true' }
         : {};

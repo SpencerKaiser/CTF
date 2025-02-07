@@ -16,7 +16,6 @@ export const defaultChallenges = createChallenges({
     description: 'Gain access to the system',
     tasks: {
       findUsersEndpoint: false,
-      findLimitOrPaginate: false,
       retrieveExpandedUserDetails: false,
       attemptLogin: false,
       successfullyLogin: false,
@@ -25,13 +24,19 @@ export const defaultChallenges = createChallenges({
   'ACCESS GRANTED': {
     description: 'Gain elevated access',
     tasks: {
+      findLimitOrPaginate: false,
+      retrieveExpandedVulnerableAdmin: false,
       attemptLoginAsAdmin: false,
       successfullyLoginAsAdmin: false,
     },
   },
-  'Mission Accomplished': {
-    description: 'Publicly expose the secret data',
-    tasks: {},
+  'Save the (digital) world': {
+    description: 'Expose the secret data for the betterment of humanity',
+    tasks: {
+      retrieveBugZero: false,
+      identifyPatchEndpoint: false,
+      patchBugZero: false,
+    },
   },
 } as const);
 

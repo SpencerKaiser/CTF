@@ -8,7 +8,7 @@ export type UserFetchError = {
 
 const fetchUser = async (): Promise<User | UserFetchError> => {
   try {
-    const { data } = await axios.get<User>('/api/users/me?expanded=false');
+    const { data } = await axios.get<User>('/api/user/me?expanded=false');
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.status === 401) {

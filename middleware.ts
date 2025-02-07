@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getUserFromRequest } from './src/utils/cookies/getUserFromRequest';
 
 const ignoredBasePaths = ['/api/auth', '/api/ctf'];
-const ignoredFullPaths = ['/api/users', '/api/digimal'];
+const ignoredFullPaths = ['/api/user', '/api/bug'];
 
 export const middleware = async (req: NextRequest) => {
   const { pathname } = req.nextUrl;

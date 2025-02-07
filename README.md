@@ -33,3 +33,11 @@ Here is the ideal flow for devs to complete the CTF:
 - Dev queries ALL items using the same pagination associated with users (TODO)
 - Dev identifies the secret item
 - Dev attempts to make PUT/PATCH against the item to make it public
+
+Enhancements:
+
+- Confetti on progress
+- Notification on sign in
+- Add style to title of challenge and icon
+- Add fake header/value to ctf response
+- Add easter eggs to ctf response

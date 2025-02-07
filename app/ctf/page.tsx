@@ -8,7 +8,7 @@ import { PageSpinner } from '@/components/PageSpinner';
 import { Challenge } from '@/src/types/Challenge';
 import { ChallengeDetails } from './ChallengeDetails/ChallengeDetails';
 
-const pollingIntervalInSeconds = 15;
+const pollingIntervalInSeconds = 3;
 
 const sectionProps: FlexProps = {
   direction: 'column',

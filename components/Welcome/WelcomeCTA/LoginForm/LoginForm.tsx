@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios, { isAxiosError } from 'axios';
 import { Button, Flex, Input, InputWrapper, Text } from '@mantine/core';
 import { useUserStore } from '@/app/stores/UserStore';
 import { tempPasswordSuffix } from '@/src/utils';
 
 export const LoginForm: React.FC = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,6 +39,9 @@ export const LoginForm: React.FC = () => {
         password,
       });
       await useUserStore.getState().init();
+
+      // Don't unset isSubmitting so the spinner remains during redirect
+      router.push('/bugs');
     } catch (error) {
       if (isAxiosError(error) && error.status === 401) {
         const hasTempPassword =
@@ -46,8 +51,8 @@ export const LoginForm: React.FC = () => {
       } else {
         alert('An unexpected error occurred');
       }
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   return (
@@ -61,7 +66,7 @@ export const LoginForm: React.FC = () => {
       <InputWrapper label="Username">
         <Input
           value={username}
-          placeholder="Mr. Anderson"
+          placeholder="MrRobot"
           type="username"
           onChange={(e) => {
             setUsername(e.target.value);

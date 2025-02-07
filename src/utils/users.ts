@@ -38,6 +38,7 @@ const resetPasswordIndices = deDupe([
   ...getRandomIndices({ numIndices: targetNumUsersWithTempPasswords * 2, forceInclude: 7 }) // Make extra to compensate for potential overlap with admins
     .filter((index) => !adminIndices.includes(index)), // Remove admin dupes
 ]).slice(0, targetNumUsersWithTempPasswords); // Potentially reduce back to target number
+const indexOfVulnerableAdmin = adminIndices[Math.floor(adminIndices.length / 2)] as number;
 
 /**
  * Generate a list of users using a seed so the result is static across runs
@@ -46,15 +47,13 @@ const resetPasswordIndices = deDupe([
 const createUsers = (): Readonly<RawUser[]> => {
   const users: RawUser[] = [];
 
-  const targetOfVulnerableAdmin = adminIndices[Math.floor(adminIndices.length / 2)];
-
   for (let i = 0; i < numUsers; i++) {
     const recoveryWord = faker.word.sample();
     const isAdmin = adminIndices.includes(i) || undefined; // Use undefined so it's not always visible in the API response
 
     // If index of the current user is the "vulnerable admin", make their password the temp password, else follow normal flow
     const hasTempPassword =
-      i === targetOfVulnerableAdmin || resetPasswordIndices.includes(i) || undefined; // Use undefined so it's not always visible in the API response
+      i === indexOfVulnerableAdmin || resetPasswordIndices.includes(i) || undefined; // Use undefined so it's not always visible in the API response
 
     const password = hasTempPassword
       ? `${recoveryWord}${tempPasswordSuffix}`
@@ -76,3 +75,4 @@ const createUsers = (): Readonly<RawUser[]> => {
  * List of statically generated users that can be referenced at any time
  */
 export const USERS = createUsers();
+export const VULNERABLE_ADMIN_ID = (USERS[indexOfVulnerableAdmin] as RawUser).id;
