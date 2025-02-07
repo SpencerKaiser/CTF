@@ -3,6 +3,7 @@ export type Challenge = {
   description: string;
   numTasks: number;
   numTasksAccomplished: number;
+  showTitleAsCode?: boolean;
 };
 
 export type RawChallenge = Omit<Challenge, 'title' | 'numTasks' | 'numTasksAccomplished'> & {
@@ -29,6 +30,7 @@ export const defaultChallenges = createChallenges({
       attemptLoginAsAdmin: false,
       successfullyLoginAsAdmin: false,
     },
+    showTitleAsCode: true,
   },
   'Save the (digital) world': {
     description: 'Expose the secret data for the betterment of humanity',

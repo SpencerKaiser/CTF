@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { faker } from '@faker-js/faker';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import axios from 'axios';
 import { Button, Code, Container, Flex, Text, Title } from '@mantine/core';
@@ -26,6 +27,10 @@ const fetchBugs = async ({ cursor }: { cursor?: number } = {}) => {
 };
 
 export default function Bugs() {
+  useEffect(() => {
+    console.info(faker.hacker.phrase());
+  }, []);
+
   const { user } = useUserStore();
   const router = useRouter();
   const pageLoadedRef = useRef(false);

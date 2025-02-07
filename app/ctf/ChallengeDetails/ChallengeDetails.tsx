@@ -1,5 +1,5 @@
 import { IconSquare, IconSquareCheck } from '@tabler/icons-react';
-import { Flex, Progress, Text, Title } from '@mantine/core';
+import { Code, Flex, Progress, Text, Title } from '@mantine/core';
 import { Challenge } from '@/src/types/Challenge';
 
 type ChallengeDetailsProps = Challenge;
@@ -11,7 +11,9 @@ export const ChallengeDetails: React.FC<ChallengeDetailsProps> = ({
   description,
   numTasks,
   numTasksAccomplished,
+  showTitleAsCode,
 }) => {
+  const completed = numTasksAccomplished >= numTasks;
   const challengeProgress = numTasksAccomplished / numTasks;
 
   return (
@@ -23,9 +25,9 @@ export const ChallengeDetails: React.FC<ChallengeDetailsProps> = ({
       )}
 
       <Flex direction="column" w="100%">
-        <Title order={3}>{title}</Title>
+        <Title order={3}>{showTitleAsCode ? <Code fz="h3">{title}</Code> : title}</Title>
         <Text c="dimmed">{description}</Text>
-        <Progress value={challengeProgress * 100} animated w="100%" />
+        {!completed && <Progress value={challengeProgress * 100} animated w="100%" />}
       </Flex>
     </Flex>
   );

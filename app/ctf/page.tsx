@@ -8,6 +8,10 @@ import { PageSpinner } from '@/components/PageSpinner';
 import { Challenge } from '@/src/types/Challenge';
 import { ChallengeDetails } from './ChallengeDetails/ChallengeDetails';
 
+type CTFResponse = {
+  challenges: Challenge[];
+};
+
 const pollingIntervalInSeconds = 3;
 
 const sectionProps: FlexProps = {
@@ -19,7 +23,7 @@ const sectionProps: FlexProps = {
 };
 
 const fetchChallenges = async () => {
-  const { data } = await axios.get<Challenge[]>('/api/ctf');
+  const { data } = await axios.get<CTFResponse>('/api/ctf');
   return data;
 };
 
@@ -30,8 +34,8 @@ export default function CTF() {
   useEffect(() => {
     const fetchAndSetChallenges = async () => {
       try {
-        const data = await fetchChallenges();
-        setChallenges(data);
+        const { challenges: updatedChallenges } = await fetchChallenges();
+        setChallenges(updatedChallenges);
       } catch (err) {
         alert('Unexpected error occurred...');
       }

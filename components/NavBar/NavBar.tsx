@@ -13,7 +13,7 @@ export const NavBar: React.FC = () => {
   const [opened, { toggle }] = useDisclosure();
 
   return (
-    <Flex w="full" justify="end" pr={20} gap={10} align="center">
+    <Flex w="full" justify="end" pr={20} gap={10} align="center" pt={10}>
       <Menu shadow="md" width={200} onClose={toggle} opened={opened}>
         <Menu.Target>
           <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
