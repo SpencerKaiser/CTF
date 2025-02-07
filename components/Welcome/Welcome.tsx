@@ -1,28 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Text, Title } from '@mantine/core';
 import { useUserStore } from '@/app/stores/UserStore';
 import { PageSpinner } from '../PageSpinner';
 import { WelcomeCTA } from './WelcomeCTA/WelcomeCTA';
 import classes from './Welcome.module.css';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const Welcome = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    Promise.all([useUserStore.getState().init(), sleep(750)]).then(([response]) => {
-      const { error } = response ?? {};
-      if (error === 'server-error') {
-        // TODO: redirect to error page
-        alert('Unexpected error occurred');
-      }
-
-      setIsLoading(false);
-    });
-  }, []);
+  const { isLoading } = useUserStore();
 
   return (
     <>

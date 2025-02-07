@@ -1,7 +1,10 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 import React from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { CTFPoller } from '@/components/CTFPoller/CTFPoller';
 import { NavBar } from '../components/NavBar/NavBar';
 import { theme } from '../theme';
 
@@ -23,6 +26,8 @@ export default function RootLayout({ children }: { children: any }) {
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="dark">
+          <CTFPoller />
+          <Notifications />
           <NavBar />
           {children}
         </MantineProvider>

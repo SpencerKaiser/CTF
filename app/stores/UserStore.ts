@@ -22,16 +22,21 @@ type UserStore = {
   user: User | undefined;
   init: () => Promise<UserFetchError | undefined>;
   reset: () => void;
+  isLoading: boolean;
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const useUserStore = create<UserStore>((set) => ({
+  isLoading: true,
   user: undefined,
   setUser: (user: User) => set({ user }),
   init: async () => {
-    const result = await fetchUser();
+    const [result] = await Promise.all([fetchUser(), sleep(750)]);
     if ('username' in result) {
-      set({ user: result });
+      set({ user: result, isLoading: false });
     } else {
+      set({ isLoading: false });
       return result;
     }
   },

@@ -1,18 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { IconFlagFilled } from '@tabler/icons-react';
-import axios from 'axios';
 import { Container, Flex, FlexProps, Text, Title } from '@mantine/core';
 import { PageSpinner } from '@/components/PageSpinner';
-import { Challenge } from '@/src/types/Challenge';
+import { useChallengeStore } from '../stores/ChallengeStore';
 import { ChallengeDetails } from './ChallengeDetails/ChallengeDetails';
-
-type CTFResponse = {
-  challenges: Challenge[];
-};
-
-const pollingIntervalInSeconds = 3;
 
 const sectionProps: FlexProps = {
   direction: 'column',
@@ -22,32 +14,8 @@ const sectionProps: FlexProps = {
   maw: 800,
 };
 
-const fetchChallenges = async () => {
-  const { data } = await axios.get<CTFResponse>('/api/ctf');
-  return data;
-};
-
 export default function CTF() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-
-  useEffect(() => {
-    const fetchAndSetChallenges = async () => {
-      try {
-        const { challenges: updatedChallenges } = await fetchChallenges();
-        setChallenges(updatedChallenges);
-      } catch (err) {
-        alert('Unexpected error occurred...');
-      }
-      setIsLoading(false);
-    };
-
-    fetchAndSetChallenges();
-
-    const interval = setInterval(fetchAndSetChallenges, pollingIntervalInSeconds * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { challenges, isLoading } = useChallengeStore();
 
   return (
     <Flex direction="column" gap={100} justify="center" align="center" mx={20} mt={50}>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { isAxiosError } from 'axios';
 import { Button, Flex, Input, InputWrapper, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { useUserStore } from '@/app/stores/UserStore';
 import { tempPasswordSuffix } from '@/src/utils';
 
@@ -39,6 +40,11 @@ export const LoginForm: React.FC = () => {
         password,
       });
       await useUserStore.getState().init();
+
+      notifications.show({
+        message: 'Welcome back! 🚀',
+        position: 'top-center',
+      });
 
       // Don't unset isSubmitting so the spinner remains during redirect
       router.push('/bugs');
